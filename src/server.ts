@@ -2,15 +2,21 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import productRouter from "./routers/products-router.js";
-
+import { importData } from "./controllers/products-controller.js";
 
 
 dotenv.config()
 
 import * as cron from 'node-cron'
 
-cron.schedule('5 4 * * *', () => {
-  console.log('running a task every minute');
+cron.schedule('5 4 * * *', async () => {
+  await importData()
+  .then(() => {
+    console.log('Importação concluída com sucesso!');
+  })
+  .catch((error) => {
+    console.error('Erro durante a importação:', error.message);
+  });
 });
 
 

@@ -23,3 +23,7 @@ export type Product = {
     main_category: string,
     image_url: string
 }
+
+export type OpenFoddItem = {
+    fileName: string
+}

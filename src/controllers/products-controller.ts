@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { Product } from "../interface/product-interface";
 import httpStatus from "http-status";
 import createProductsService from "../service/products-service.js";
+import axios, { AxiosResponse } from "axios";
+import { importProducts } from "../service/cron-importProducts-service.js";
+
 
 
 
@@ -62,6 +65,40 @@ export async function createProducts (req: Request, res: Response) {
 
     } catch (err) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message)
+    }
+
+}
+
+export async function importData() {
+
+
+    const url = "https://challenges.coode.sh/food/data/json/index.txt";
+    axios.get(url)
+    .then((indexResponse) => {
+        const fileNames = indexResponse.data.split('\n').filter(Boolean)
+        const promises = fileNames.map((fileName) => {
+            const fileUrl = `https://challenges.coode.sh/food/data/json/${fileName}`;
+            return axios.get(fileUrl)
+        })
+        return Promise.all(promises)
+    })
+    .then((fileResponses: AxiosResponse<any>[]) => {
+        // Lógica para importar os produtos usando o serviço para cada resposta de arquivo
+        return Promise.all(fileResponses.map((response) => importProducts(response.data)));
+      })
+      .then(() => {
+        console.log('Importação concluída com sucesso!')});
+    
+}
+
+export async function startImport (req: Request, res: Response) {
+
+    try {
+        await importData()
+            res.sendStatus(httpStatus.CREATED)
+        
+    } catch(err) {
+        res.status(httpStatus.BAD_REQUEST).send(err.message)
     }
 
 }
