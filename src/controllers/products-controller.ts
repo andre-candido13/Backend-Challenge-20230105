@@ -10,9 +10,10 @@ import pako from "pako"
 
 
 
-export async function createProducts (req: Request, res: Response) {
+export async function createProducts(req: Request, res: Response) {
 
     const {
+        code,
         status,
         imported_t,
         url,
@@ -39,6 +40,7 @@ export async function createProducts (req: Request, res: Response) {
 
     try {
         await productsService.createProducts({
+            code,
             status,
             imported_t,
             url,
@@ -62,7 +64,7 @@ export async function createProducts (req: Request, res: Response) {
             main_category,
             image_url
         })
-            return res.sendStatus(httpStatus.CREATED)
+        return res.sendStatus(httpStatus.CREATED)
 
 
     } catch (err) {
@@ -72,55 +74,71 @@ export async function createProducts (req: Request, res: Response) {
 }
 export async function importData() {
     const url = 'https://challenges.coode.sh/food/data/json/index.txt';
-  
+
     try {
-      // Obter a lista de nomes de arquivos do índice
-      const indexResponse = await axios.get<string>(url);
-      const fileNames = indexResponse.data.split('\n').filter(Boolean);
-  
-      // Escolher o arquivo específico que você deseja importar (por exemplo, "products_01.json.gz")
-      const targetFileName = 'products_01.json.gz';
-  
-      
+        // Obter a lista de nomes de arquivos do índice
+        const indexResponse = await axios.get<string>(url);
+        const fileNames = indexResponse.data.split('\n').filter(Boolean);
+
+        // Escolher o arquivo específico que você deseja importar (por exemplo, "products_01.json.gz")
+        const targetFileName = 'products_01.json.gz';
+
+
         const fileUrl = `https://challenges.coode.sh/food/data/json/${targetFileName}`;
-  
+
         // Baixar o arquivo .gz
         const fileResponse: AxiosResponse<ArrayBuffer> = await axios.get(fileUrl, { responseType: 'arraybuffer' });
-  
+
         // Descomprimir os dados usando pako diretamente
         const inflatedData = pako.inflate(new Uint8Array(fileResponse.data), { to: 'string' });
         console.log('Conteúdo dos primeiros 100 caracteres:', inflatedData.toString().slice(0, 100));
-  
+
         // Verificar se a descompressão foi bem-sucedida
     } catch (err) {
-      console.error(err)
+        console.error(err)
     }
-  }
+}
 
-  export async function startImport (req: Request, res: Response) {
+export async function startImport(req: Request, res: Response) {
 
     try {
         await importData()
-            res.sendStatus(httpStatus.CREATED)
-        
-    } catch(err) {
+        res.sendStatus(httpStatus.CREATED)
+
+    } catch (err) {
         res.status(httpStatus.BAD_REQUEST).send(err.message)
     }
 
 }
 
 
-export async function findAll (req: Request, res: Response) {
+export async function findAll(req: Request, res: Response) {
 
     try {
 
-const foods = productsService.findAll()
-    res.send(foods)
+        const foods = await productsService.findAll()
+        res.send(foods)
 
     } catch (err) {
         res.status(httpStatus.BAD_REQUEST).send(err.message)
     }
 
 
+
+}
+
+export async function findProduct (req: Request, res: Response) {
+
+   const productCode = +req.params.code
+
+    try {
+
+       const products= await productsService.findProduct(productCode)
+
+            res.status(httpStatus.OK).send(products)
+            
+    } catch (err) {
+        res.status(httpStatus.BAD_REQUEST).send(err.message)
+    }
 
 }

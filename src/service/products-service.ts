@@ -4,6 +4,7 @@ import { notFoundError } from "../errors/index.js";
 
 
 async function createProducts ({
+    code,
     status,
     imported_t,
     url,
@@ -30,6 +31,7 @@ async function createProducts ({
 }: ProductCreate) {
 
 const products = await productsRepository.createProducts({
+    code,
     status,
     imported_t,
     url,
@@ -59,14 +61,24 @@ const products = await productsRepository.createProducts({
 
 async function findAll () {
 
-    const foods = productsRepository.findAll()
+    const foods = await productsRepository.findAll()
 
-    if (!foods) throw notFoundError
-
-    return foods
+    if (!foods.rowCount) throw notFoundError
+   
+    return foods.rows
 
 }
 
+
+async function findProduct (code: number) {
+    const productResult = await productsRepository.findProduct(code);
+
+    if (!productResult.rowCount ) throw notFoundError
+    
+    console.log(productResult.rows[0])
+    return productResult.rows[0];
+   
+}
 
 
 
@@ -76,7 +88,8 @@ async function findAll () {
 
 const productsService = {
     createProducts,
-    findAll
+    findAll,
+    findProduct
 }
 
 export default productsService;

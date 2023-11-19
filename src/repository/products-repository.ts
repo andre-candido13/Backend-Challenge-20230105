@@ -52,7 +52,7 @@ async function createProducts ({
     "nutriscore_grade",
     "main_category",
     "image_url"
-    ) VALUES ($1, $2, $3, $4, to_timestamp($5), to_timestamp($6), $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
+    ) VALUES ($1, $2, $3, $4, $5, to_timestamp($6), to_timestamp($7), $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
     )`, [
         code,
         status,
@@ -86,6 +86,13 @@ async function createProducts ({
 async function findAll () {
 
     return await db.query(`SELECT * FROM products`)
+   
+
+}
+
+async function findProduct (code: number) {
+
+    return await db.query(`SELECT * FROM products WHERE code=$1`, [code])
 
 }
 
@@ -96,7 +103,8 @@ async function findAll () {
 
 const productsRepository = {
     createProducts,
-    findAll
+    findAll,
+    findProduct
 }
 
 export default productsRepository;

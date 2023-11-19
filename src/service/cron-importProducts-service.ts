@@ -1,4 +1,4 @@
-import { Product } from "../interface/product-interface";
+import { ProductCreate } from "../interface/product-interface";
 import createProductsRepository from "../repository/products-repository.js";
 
 
@@ -19,7 +19,7 @@ export async function importProducts (data:any) {
 
     const importPromises = productsToImport.map(async (productData) => {
        
-        const product: Product =  {
+        const product: ProductCreate =  {
             code: productData.code,
             status: status,
             imported_t: importDate,
