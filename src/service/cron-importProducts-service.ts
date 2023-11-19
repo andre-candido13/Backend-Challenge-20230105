@@ -3,14 +3,24 @@ import createProductsRepository from "../repository/products-repository.js";
 
 
 
+
 export async function importProducts (data:any) {
 
     const importDate = new Date();
     const status = 'draft'
-    const productsToImport = data.slice(0, 100);
+
+    console.log(data.substring(0, 500)); 
+
+   
+    
+    const productsToImport = data.slice(0, 1);
+
+    if (Array.isArray) {
 
     const importPromises = productsToImport.map(async (productData) => {
+       
         const product: Product =  {
+            code: productData.code,
             status: status,
             imported_t: importDate,
             url: productData.url,
@@ -23,8 +33,8 @@ export async function importProducts (data:any) {
             categories: productData.categories,
             labels: productData.labels,
             cities: productData.cities,
-            purchase_places: productData.purchase,
-            stores: productData.sotres,
+            purchase_places: productData.purchase_places,
+            stores: productData.stores,
             ingredients_text: productData.ingredients_text,
             traces: productData.traces,
             serving_size: productData.serving_size,
@@ -34,11 +44,15 @@ export async function importProducts (data:any) {
             main_category: productData.main_category,
             image_url: productData.image_url
 
+            
+
         }
             await createProductsRepository.createProducts(product)
+            //console.log("aaaa", product)
+           //console.log("bbbbb", productData)
 
     })
 
     await Promise.all(importPromises)
 }
-
+}

@@ -1,4 +1,4 @@
-export type Product = {
+export type ProductCreate = {
     code?: number,
     status: "draft" | "trash" | "published",
     imported_t: Date,

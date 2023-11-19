@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
-import { Product } from "../interface/product-interface";
+import { ProductCreate } from "../interface/product-interface";
 import httpStatus from "http-status";
-import createProductsService from "../service/products-service.js";
+import productsService from "../service/products-service.js";
 import axios, { AxiosResponse } from "axios";
 import { importProducts } from "../service/cron-importProducts-service.js";
+import pako from "pako"
+
 
 
 
@@ -33,10 +35,10 @@ export async function createProducts (req: Request, res: Response) {
         nutriscore_grade,
         main_category,
         image_url
-    } = req.body as Product
+    } = req.body as ProductCreate
 
     try {
-        await createProductsService.createProducts({
+        await productsService.createProducts({
             status,
             imported_t,
             url,
@@ -68,30 +70,34 @@ export async function createProducts (req: Request, res: Response) {
     }
 
 }
-
 export async function importData() {
+    const url = 'https://challenges.coode.sh/food/data/json/index.txt';
+  
+    try {
+      // Obter a lista de nomes de arquivos do índice
+      const indexResponse = await axios.get<string>(url);
+      const fileNames = indexResponse.data.split('\n').filter(Boolean);
+  
+      // Escolher o arquivo específico que você deseja importar (por exemplo, "products_01.json.gz")
+      const targetFileName = 'products_01.json.gz';
+  
+      
+        const fileUrl = `https://challenges.coode.sh/food/data/json/${targetFileName}`;
+  
+        // Baixar o arquivo .gz
+        const fileResponse: AxiosResponse<ArrayBuffer> = await axios.get(fileUrl, { responseType: 'arraybuffer' });
+  
+        // Descomprimir os dados usando pako diretamente
+        const inflatedData = pako.inflate(new Uint8Array(fileResponse.data), { to: 'string' });
+        console.log('Conteúdo dos primeiros 100 caracteres:', inflatedData.toString().slice(0, 100));
+  
+        // Verificar se a descompressão foi bem-sucedida
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
-
-    const url = "https://challenges.coode.sh/food/data/json/index.txt";
-    axios.get(url)
-    .then((indexResponse) => {
-        const fileNames = indexResponse.data.split('\n').filter(Boolean)
-        const promises = fileNames.map((fileName) => {
-            const fileUrl = `https://challenges.coode.sh/food/data/json/${fileName}`;
-            return axios.get(fileUrl)
-        })
-        return Promise.all(promises)
-    })
-    .then((fileResponses: AxiosResponse<any>[]) => {
-        // Lógica para importar os produtos usando o serviço para cada resposta de arquivo
-        return Promise.all(fileResponses.map((response) => importProducts(response.data)));
-      })
-      .then(() => {
-        console.log('Importação concluída com sucesso!')});
-    
-}
-
-export async function startImport (req: Request, res: Response) {
+  export async function startImport (req: Request, res: Response) {
 
     try {
         await importData()
@@ -100,5 +106,21 @@ export async function startImport (req: Request, res: Response) {
     } catch(err) {
         res.status(httpStatus.BAD_REQUEST).send(err.message)
     }
+
+}
+
+
+export async function findAll (req: Request, res: Response) {
+
+    try {
+
+const foods = productsService.findAll()
+    res.send(foods)
+
+    } catch (err) {
+        res.status(httpStatus.BAD_REQUEST).send(err.message)
+    }
+
+
 
 }

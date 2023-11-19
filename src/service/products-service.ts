@@ -1,5 +1,6 @@
-import { Product } from "../interface/product-interface.js";
-import createProductsRepository from "../repository/products-repository.js";
+import { ProductCreate } from "../interface/product-interface.js";
+import productsRepository from "../repository/products-repository.js";
+import { notFoundError } from "../errors/index.js";
 
 
 async function createProducts ({
@@ -26,9 +27,9 @@ async function createProducts ({
     main_category,
     image_url
 
-}: Product) {
+}: ProductCreate) {
 
-const products = await createProductsRepository.createProducts({
+const products = await productsRepository.createProducts({
     status,
     imported_t,
     url,
@@ -56,8 +57,26 @@ const products = await createProductsRepository.createProducts({
 
 }
 
-const createProductsService = {
-    createProducts
+async function findAll () {
+
+    const foods = productsRepository.findAll()
+
+    if (!foods) throw notFoundError
+
+    return foods
+
 }
 
-export default createProductsService;
+
+
+
+
+
+
+
+const productsService = {
+    createProducts,
+    findAll
+}
+
+export default productsService;
