@@ -1,6 +1,7 @@
 import { ProductCreate } from "../interface/product-interface.js";
 import productsRepository from "../repository/products-repository.js";
 import { notFoundError } from "../errors/index.js";
+import httpStatus from "http-status";
 
 
 async function createProducts ({
@@ -82,7 +83,7 @@ async function findProduct (code: number) {
    
 }
 
-async function updateProduct (code: number, {
+async function updateProduct (productCode: number, {
         status,
         imported_t,
         url,
@@ -109,13 +110,13 @@ async function updateProduct (code: number, {
     }: ProductCreate)
  {
 
-    const existingProduct = await productsRepository.findProduct(code)
-    console.log("aaaa", existingProduct)
-    if (!existingProduct || existingProduct.rowCount === 0) {
-        throw notFoundError()
+    const existingProduct = await productsRepository.findProduct(productCode)
+    console.log(productCode)
+    if (!existingProduct.rows || existingProduct.rows.length === 0) {
+      throw notFoundError()
     }    
 
-    const update = await productsRepository.updateProducts(code, { 
+    const update = await productsRepository.updateProducts(productCode, { 
             status,
             imported_t,
             url,
@@ -139,9 +140,8 @@ async function updateProduct (code: number, {
             main_category,
             image_url
         } )
-
+        console.log("aaaaaaaa")
        return update
-
 }
 
 

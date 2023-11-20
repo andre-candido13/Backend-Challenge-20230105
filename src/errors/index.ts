@@ -1,9 +1,8 @@
-import { ErrorReturn } from "../interface/error-interface";
+import { ErrorReturn } from "../interface/error-interface.js";
 
 
-export function notFoundError(): ErrorReturn {
-    return {
-      name: "NotFoundError",
-      message: "No result for this search!",
-    };
-  }
+export function notFoundError(): Error {
+  const error: Error & ErrorReturn = new Error("No result for this search!");
+  error.name = "NotFoundError";
+  return error;
+}

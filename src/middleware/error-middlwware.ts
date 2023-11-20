@@ -4,7 +4,7 @@ import { ErrorReturn } from "../interface/error-interface.js";
 
 export function handleApplicationErrors(
   err: Error & ErrorReturn,
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction
 ) {
@@ -20,5 +20,5 @@ export function handleApplicationErrors(
         message: "Internal Server Error",
       });
 
-
+  next(err)
 }
