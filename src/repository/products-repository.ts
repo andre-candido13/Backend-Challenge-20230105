@@ -128,6 +128,12 @@ async function updateProducts (productCode: number, updateProduct: ProductCreate
 
 }
 
+async function updateProductsStatus (productCode: number, newStatus: string) {
+
+    await db.query('UPDATE products SET status = $1 WHERE code = $2', [newStatus, productCode]);
+
+}
+
 
 
 
@@ -137,7 +143,8 @@ const productsRepository = {
     createProducts,
     findAll,
     findProduct, 
-    updateProducts
+    updateProducts,
+    updateProductsStatus
 }
 
 export default productsRepository;

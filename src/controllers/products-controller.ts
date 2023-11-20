@@ -13,57 +13,9 @@ import pako from "pako"
 export async function createProducts(req: Request, res: Response, next: NextFunction) {
     
     try {
-    const {
-        code,
-        status,
-        imported_t,
-        url,
-        creator,
-        created_t,
-        last_modified_t,
-        product_name,
-        quantity,
-        brands,
-        categories,
-        labels,
-        cities,
-        purchase_places,
-        stores,
-        ingredients_text,
-        traces,
-        serving_size,
-        serving_quantity,
-        nutriscore_score,
-        nutriscore_grade,
-        main_category,
-        image_url
-    } = req.body as ProductCreate
+    const productData =  req.body as ProductCreate
 
-        await productsService.createProducts({
-            code,
-            status,
-            imported_t,
-            url,
-            creator,
-            created_t,
-            last_modified_t,
-            product_name,
-            quantity,
-            brands,
-            categories,
-            labels,
-            cities,
-            purchase_places,
-            stores,
-            ingredients_text,
-            traces,
-            serving_size,
-            serving_quantity,
-            nutriscore_score,
-            nutriscore_grade,
-            main_category,
-            image_url
-        })
+        await productsService.createProducts(productData)
         return res.sendStatus(httpStatus.CREATED)
 
 
@@ -150,57 +102,29 @@ export async function updateProduct (req: Request, res: Response, next: NextFunc
     
     const productCode = +req.params.code
     
-    const {
-        status,
-        imported_t,
-        url,
-        creator,
-        created_t,
-        last_modified_t,
-        product_name,
-        quantity,
-        brands,
-        categories,
-        labels,
-        cities,
-        purchase_places,
-        stores,
-        ingredients_text,
-        traces,
-        serving_size,
-        serving_quantity,
-        nutriscore_score,
-        nutriscore_grade,
-        main_category,
-        image_url
-    } = req.body as ProductCreate
-    
+    const productData = req.body as ProductCreate
+
     try {
-    await productsService.updateProduct(productCode,{
-        status,
-        imported_t,
-        url,
-        creator,
-        created_t,
-        last_modified_t,
-        product_name,
-        quantity,
-        brands,
-        categories,
-        labels,
-        cities,
-        purchase_places,
-        stores,
-        ingredients_text,
-        traces,
-        serving_size,
-        serving_quantity,
-        nutriscore_score,
-        nutriscore_grade,
-        main_category,
-        image_url})
+
+       await productsService.updateProduct(productCode, productData)
 
         res.sendStatus(201)
+    } catch (err) {
+        next(err)
+    }
+
+}
+
+
+export async function destroy (req: Request, res:Response, next: NextFunction) {
+
+    const productCode = +req.params.code
+
+    try {
+
+         await productsService.destroy(productCode)
+        res.sendStatus(201)
+
     } catch (err) {
         next(err)
     }

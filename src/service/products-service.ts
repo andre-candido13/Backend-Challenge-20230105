@@ -1,61 +1,13 @@
 import { ProductCreate } from "../interface/product-interface.js";
 import productsRepository from "../repository/products-repository.js";
 import { notFoundError } from "../errors/index.js";
-import httpStatus from "http-status";
 
 
-async function createProducts ({
-    code,
-    status,
-    imported_t,
-    url,
-    creator,
-    created_t,
-    last_modified_t,
-    product_name,
-    quantity,
-    brands,
-    categories,
-    labels,
-    cities,
-    purchase_places,
-    stores,
-    ingredients_text,
-    traces,
-    serving_size,
-    serving_quantity,
-    nutriscore_score,
-    nutriscore_grade,
-    main_category,
-    image_url
 
-}: ProductCreate) {
 
-const products = await productsRepository.createProducts({
-    code,
-    status,
-    imported_t,
-    url,
-    creator,
-    created_t,
-    last_modified_t,
-    product_name,
-    quantity,
-    brands,
-    categories,
-    labels,
-    cities,
-    purchase_places,
-    stores,
-    ingredients_text,
-    traces,
-    serving_size,
-    serving_quantity,
-    nutriscore_score,
-    nutriscore_grade,
-    main_category,
-    image_url
-})
+async function createProducts (createProduct: ProductCreate) {
+
+const products = await productsRepository.createProducts(createProduct)
     return products
 
 }
@@ -83,67 +35,32 @@ async function findProduct (code: number) {
    
 }
 
-async function updateProduct (productCode: number, {
-        status,
-        imported_t,
-        url,
-        creator,
-        created_t,
-        last_modified_t,
-        product_name,
-        quantity,
-        brands,
-        categories,
-        labels,
-        cities,
-        purchase_places,
-        stores,
-        ingredients_text,
-        traces,
-        serving_size,
-        serving_quantity,
-        nutriscore_score,
-        nutriscore_grade,
-        main_category,
-        image_url
-    
-    }: ProductCreate)
+async function updateProduct (productCode: number, updateProduct: ProductCreate)
  {
 
     const existingProduct = await productsRepository.findProduct(productCode)
-    console.log(productCode)
+
     if (!existingProduct.rows || existingProduct.rows.length === 0) {
       throw notFoundError()
     }    
 
-    const update = await productsRepository.updateProducts(productCode, { 
-            status,
-            imported_t,
-            url,
-            creator,
-            created_t,
-            last_modified_t,
-            product_name,
-            quantity,
-            brands,
-            categories,
-            labels,
-            cities,
-            purchase_places,
-            stores,
-            ingredients_text,
-            traces,
-            serving_size,
-            serving_quantity,
-            nutriscore_score,
-            nutriscore_grade,
-            main_category,
-            image_url
-        } )
-        console.log("aaaaaaaa")
+    const update = await productsRepository.updateProducts(productCode, updateProduct)
        return update
 }
 
+
+async function destroy (productCode: number) {
+
+    const existingProduct = await productsRepository.findProduct(productCode)
+
+    if (!existingProduct.rows || existingProduct.rows.length === 0) {
+        throw notFoundError()
+      }  
+
+
+  await productsRepository.updateProductsStatus(productCode, "trash");
+
+}
 
 
 
@@ -154,7 +71,8 @@ const productsService = {
     createProducts,
     findAll,
     findProduct,
-    updateProduct
+    updateProduct,
+    destroy
 }
 
 export default productsService;
