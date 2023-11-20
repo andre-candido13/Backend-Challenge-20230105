@@ -11,7 +11,8 @@ import pako from "pako"
 
 
 export async function createProducts(req: Request, res: Response) {
-
+    
+    try {
     const {
         code,
         status,
@@ -38,7 +39,6 @@ export async function createProducts(req: Request, res: Response) {
         image_url
     } = req.body as ProductCreate
 
-    try {
         await productsService.createProducts({
             code,
             status,
@@ -73,9 +73,9 @@ export async function createProducts(req: Request, res: Response) {
 
 }
 export async function importData() {
+    try {
     const url = 'https://challenges.coode.sh/food/data/json/index.txt';
 
-    try {
         // Obter a lista de nomes de arquivos do índice
         const indexResponse = await axios.get<string>(url);
         const fileNames = indexResponse.data.split('\n').filter(Boolean);
@@ -128,15 +128,77 @@ export async function findAll(req: Request, res: Response) {
 }
 
 export async function findProduct (req: Request, res: Response) {
+    try {
 
    const productCode = +req.params.code
 
-    try {
 
        const products= await productsService.findProduct(productCode)
 
             res.status(httpStatus.OK).send(products)
             
+    } catch (err) {
+        res.status(httpStatus.BAD_REQUEST).send(err.message)
+    }
+
+}
+
+export async function updateProduct (req: Request, res: Response) {
+
+    try {
+
+    const productCode = +req.params.code
+
+    const {
+        status,
+        imported_t,
+        url,
+        creator,
+        created_t,
+        last_modified_t,
+        product_name,
+        quantity,
+        brands,
+        categories,
+        labels,
+        cities,
+        purchase_places,
+        stores,
+        ingredients_text,
+        traces,
+        serving_size,
+        serving_quantity,
+        nutriscore_score,
+        nutriscore_grade,
+        main_category,
+        image_url
+    } = req.body as ProductCreate
+
+    const update =  productsService.updateProduct(productCode,{
+        status,
+        imported_t,
+        url,
+        creator,
+        created_t,
+        last_modified_t,
+        product_name,
+        quantity,
+        brands,
+        categories,
+        labels,
+        cities,
+        purchase_places,
+        stores,
+        ingredients_text,
+        traces,
+        serving_size,
+        serving_quantity,
+        nutriscore_score,
+        nutriscore_grade,
+        main_category,
+        image_url})
+
+        res.status(httpStatus.OK).send(update)
     } catch (err) {
         res.status(httpStatus.BAD_REQUEST).send(err.message)
     }

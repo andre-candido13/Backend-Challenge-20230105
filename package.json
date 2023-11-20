@@ -33,6 +33,7 @@
     "pako": "^2.1.0",
     "pg": "^8.11.3",
     "routers": "^0.1.4",
+    "supports-color": "^9.4.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "zlib": "^1.0.5"
