@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ProductCreate } from "../interface/product-interface";
 import httpStatus from "http-status";
 import productsService from "../service/products-service.js";
@@ -10,7 +10,7 @@ import pako from "pako"
 
 
 
-export async function createProducts(req: Request, res: Response) {
+export async function createProducts(req: Request, res: Response, next: NextFunction) {
     
     try {
     const {
@@ -68,7 +68,7 @@ export async function createProducts(req: Request, res: Response) {
 
 
     } catch (err) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message)
+       next(err)
     }
 
 }
@@ -76,11 +76,11 @@ export async function importData() {
     try {
     const url = 'https://challenges.coode.sh/food/data/json/index.txt';
 
-        // Obter a lista de nomes de arquivos do índice
+       
         const indexResponse = await axios.get<string>(url);
         const fileNames = indexResponse.data.split('\n').filter(Boolean);
 
-        // Escolher o arquivo específico que você deseja importar (por exemplo, "products_01.json.gz")
+        
         const targetFileName = 'products_01.json.gz';
 
 
@@ -89,30 +89,32 @@ export async function importData() {
         // Baixar o arquivo .gz
         const fileResponse: AxiosResponse<ArrayBuffer> = await axios.get(fileUrl, { responseType: 'arraybuffer' });
 
-        // Descomprimir os dados usando pako diretamente
+        
         const inflatedData = pako.inflate(new Uint8Array(fileResponse.data), { to: 'string' });
-        console.log('Conteúdo dos primeiros 100 caracteres:', inflatedData.toString().slice(0, 100));
+        console.log(inflatedData)
 
-        // Verificar se a descompressão foi bem-sucedida
+        await importProducts(JSON.parse(inflatedData));
+
+        
     } catch (err) {
         console.error(err)
     }
 }
 
-export async function startImport(req: Request, res: Response) {
+export async function startImport(req: Request, res: Response, next: NextFunction) {
 
     try {
         await importData()
         res.sendStatus(httpStatus.CREATED)
 
     } catch (err) {
-        res.status(httpStatus.BAD_REQUEST).send(err.message)
+        next (err)
     }
 
 }
 
 
-export async function findAll(req: Request, res: Response) {
+export async function findAll(req: Request, res: Response, next: NextFunction) {
 
     try {
 
@@ -120,14 +122,14 @@ export async function findAll(req: Request, res: Response) {
         res.send(foods)
 
     } catch (err) {
-        res.status(httpStatus.BAD_REQUEST).send(err.message)
+       next(err)
     }
 
 
 
 }
 
-export async function findProduct (req: Request, res: Response) {
+export async function findProduct (req: Request, res: Response, next: NextFunction) {
     try {
 
    const productCode = +req.params.code
@@ -138,17 +140,16 @@ export async function findProduct (req: Request, res: Response) {
             res.status(httpStatus.OK).send(products)
             
     } catch (err) {
-        res.status(httpStatus.BAD_REQUEST).send(err.message)
+        next(err)
     }
 
 }
 
-export async function updateProduct (req: Request, res: Response) {
+export async function updateProduct (req: Request, res: Response, next: NextFunction) {
 
-    try {
-
+    
     const productCode = +req.params.code
-
+    
     const {
         status,
         imported_t,
@@ -173,8 +174,9 @@ export async function updateProduct (req: Request, res: Response) {
         main_category,
         image_url
     } = req.body as ProductCreate
-
-    const update =  productsService.updateProduct(productCode,{
+    
+    try {
+    await productsService.updateProduct(productCode,{
         status,
         imported_t,
         url,
@@ -198,9 +200,9 @@ export async function updateProduct (req: Request, res: Response) {
         main_category,
         image_url})
 
-        res.status(httpStatus.OK).send(update)
+        res.sendStatus(201)
     } catch (err) {
-        res.status(httpStatus.BAD_REQUEST).send(err.message)
+        next(err)
     }
 
 }

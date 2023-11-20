@@ -9,10 +9,6 @@ export async function importProducts (data:any) {
     const importDate = new Date();
     const status = 'draft'
 
-    console.log(data.substring(0, 500)); 
-
-   
-    
     const productsToImport = data.slice(0, 1);
 
     if (Array.isArray) {

@@ -4,7 +4,7 @@ import { db } from "../database/database.js";
 
 async function createProducts ( createProduct: ProductCreate ) {
 
-    return await db.query(`INSERT INTO products (
+    await db.query(`INSERT INTO products (
     "code",
     "status",
     "imported_t",
@@ -74,7 +74,7 @@ async function findProduct (code: number) {
 
 async function updateProducts (productCode: number, updateProduct: ProductCreate) {
 
-    return await db.query(`
+    await db.query(`
     UPDATE products 
     SET 
         status = $1,
@@ -125,8 +125,6 @@ async function updateProducts (productCode: number, updateProduct: ProductCreate
         updateProduct.image_url,
         productCode
         ])
-
-
 
 }
 

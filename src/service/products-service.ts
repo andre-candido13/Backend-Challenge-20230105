@@ -63,8 +63,9 @@ async function findAll () {
 
     const foods = await productsRepository.findAll()
 
-    if (!foods.rowCount) throw notFoundError
-   
+    if (!foods.rowCount){ 
+        throw notFoundError()
+    }   
     return foods.rows
 
 }
@@ -73,14 +74,15 @@ async function findAll () {
 async function findProduct (code: number) {
     const productResult = await productsRepository.findProduct(code);
 
-    if (!productResult.rowCount ) throw notFoundError()
-    
-    console.log(productResult.rows[0])
+    if (!productResult.rowCount) {
+        throw notFoundError()
+    }
+
     return productResult.rows[0];
    
 }
 
-async function updateProduct (productCode: number, {
+async function updateProduct (code: number, {
         status,
         imported_t,
         url,
@@ -107,11 +109,13 @@ async function updateProduct (productCode: number, {
     }: ProductCreate)
  {
 
-    const existingProduct = await productsRepository.findProduct(productCode)
-    if (!existingProduct.rowCount) throw notFoundError()
+    const existingProduct = await productsRepository.findProduct(code)
+    console.log("aaaa", existingProduct)
+    if (!existingProduct || existingProduct.rowCount === 0) {
+        throw notFoundError()
+    }    
 
-
-    const update = productsRepository.updateProducts(productCode, { 
+    const update = await productsRepository.updateProducts(code, { 
             status,
             imported_t,
             url,
@@ -137,11 +141,6 @@ async function updateProduct (productCode: number, {
         } )
 
        return update
-
-       
-
-
-
 
 }
 

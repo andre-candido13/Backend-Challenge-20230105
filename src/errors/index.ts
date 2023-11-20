@@ -1,9 +1,6 @@
 import { ErrorReturn } from "../interface/error-interface";
 
 
-
-
-
 export function notFoundError(): ErrorReturn {
     return {
       name: "NotFoundError",
