@@ -1,0 +1,144 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Sistema de Produtos API",
+      "description": "API para gerenciar produtos",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:5000"
+      }
+    ],
+    "paths": {
+      "/products": {
+        "post": {
+          "summary": "Criar um novo produto",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductCreate"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Produto criado com sucesso"
+            }
+          }
+        }
+      },
+      "/products/{code}": {
+        "get": {
+          "summary": "Obter informações de um produto",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "code",
+              "required": true,
+              "description": "Código do produto",
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Informações do produto"
+            },
+            "404": {
+              "description": "Produto não encontrado"
+            }
+          }
+        },
+        "put": {
+          "summary": "Atualizar informações de um produto",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "code",
+              "required": true,
+              "description": "Código do produto",
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductCreate"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Produto atualizado com sucesso"
+            },
+            "404": {
+              "description": "Produto não encontrado"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Mover produto para a lixeira",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "code",
+              "required": true,
+              "description": "Código do produto",
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "Produto movido para a lixeira"
+            },
+            "404": {
+              "description": "Produto não encontrado"
+            }
+          }
+        }
+      },
+      "/products/import": {
+        "post": {
+          "summary": "Iniciar a importação de dados",
+          "responses": {
+            "201": {
+              "description": "Importação iniciada com sucesso"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "ProductCreate": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "status": {
+              "type": "string"
+            },
+            "imported_t": {
+              "type": "string",
+              "format": "date-time"
+            }
+           
+          }
+        }
+      }
+    }
+  }
+  

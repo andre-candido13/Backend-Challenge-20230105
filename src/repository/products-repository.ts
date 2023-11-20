@@ -66,6 +66,12 @@ async function findAll () {
 
 }
 
+async function findAllWithPagination(offset: number, limit: number) {
+
+    return await db.query('SELECT * FROM products OFFSET $1 LIMIT $2', [offset, limit]);
+  
+}  
+
 async function findProduct (code: number) {
 
     return await db.query(`SELECT * FROM products WHERE code=$1`, [code])
@@ -144,7 +150,8 @@ const productsRepository = {
     findAll,
     findProduct, 
     updateProducts,
-    updateProductsStatus
+    updateProductsStatus,
+    findAllWithPagination
 }
 
 export default productsRepository;

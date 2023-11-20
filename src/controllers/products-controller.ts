@@ -70,16 +70,23 @@ export async function findAll(req: Request, res: Response, next: NextFunction) {
 
     try {
 
-        const foods = await productsService.findAll()
-        res.send(foods)
+        const { page, pageSize } = req.query;
 
-    } catch (err) {
-       next(err)
-    }
-
-
-
+        if (page !== undefined && pageSize !== undefined) {
+         
+          const foods = await productsService.findAllWithPagination(+page, +pageSize);
+          res.send(foods);
+        } else {
+        
+          const foods = await productsService.findAll();
+          res.send(foods);
+        }
+      } catch (err) {
+        next(err);
+      }
 }
+
+
 
 export async function findProduct (req: Request, res: Response, next: NextFunction) {
     try {

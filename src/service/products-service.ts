@@ -12,16 +12,45 @@ const products = await productsRepository.createProducts(createProduct)
 
 }
 
-async function findAll () {
-
-    const foods = await productsRepository.findAll()
-
-    if (!foods.rowCount){ 
-        throw notFoundError()
-    }   
-    return foods.rows
+async function findAll (page = 1, pageSize = 10) {
+    
+    if (page !== undefined && pageSize !== undefined) {
+       
+        const offset = (page - 1) * pageSize;
+        const limit = pageSize;
+    
+        const products = await productsRepository.findAllWithPagination(offset, limit);
+    
+        if (!products.rowCount) {
+          throw notFoundError();
+        }
+    
+        return products.rows;
+      } else {
+       
+        const allProducts = await productsRepository.findAll();
+    
+        if (!allProducts.rowCount) {
+          throw notFoundError();
+        }
+    
+        return allProducts.rows;
+      }
 
 }
+
+async function findAllWithPagination(page: number, pageSize: number) {
+    const offset = (page - 1) * pageSize;
+    const limit = pageSize;
+  
+    const products = await productsRepository.findAllWithPagination(offset, limit);
+  
+    if (!products.rowCount) {
+      throw notFoundError();
+    }
+  
+    return products.rows;
+  }
 
 
 async function findProduct (code: number) {
@@ -70,9 +99,11 @@ async function destroy (productCode: number) {
 const productsService = {
     createProducts,
     findAll,
+    findAllWithPagination,
     findProduct,
     updateProduct,
-    destroy
+    destroy,
+    
 }
 
 export default productsService;

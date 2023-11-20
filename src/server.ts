@@ -4,9 +4,12 @@ import dotenv from "dotenv";
 import productRouter from "./routers/products-router.js";
 import { importData } from "./controllers/products-controller.js";
 import { handleApplicationErrors } from "./middleware/error-middlwware.js";
+import swaggerUi from "swagger-ui-express";
+
 
 
 dotenv.config()
+
 
 import * as cron from 'node-cron'
 
@@ -28,6 +31,8 @@ server.use(express.json())
 //routes
 server.use(productRouter)
 server.use(handleApplicationErrors)
+
+
 
 
 
