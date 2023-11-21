@@ -25,8 +25,8 @@ describe("find all prodcuts endpoint GET /", ()=> {
 
 })
 
-describe("findProduct endpoint GET /products/:code",() =>{
-    it("should be return products from repository", async () => {
+describe("findProduct by code endpoint GET /products/:code",() =>{
+    it("should be return products by code from repository", async () => {
 
   
     const mockProduct = { code: 123, name: 'Test Product' };
