@@ -1,4 +1,4 @@
-import { ErrorReturn } from "../interface/error-interface.js";
+import { ErrorReturn } from "../interface/error-interface";
 
 
 export function notFoundError(): Error {

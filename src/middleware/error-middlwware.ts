@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
-import { ErrorReturn } from "../interface/error-interface.js";
+import { ErrorReturn } from "../interface/error-interface";
 
 export function handleApplicationErrors(
   err: Error & ErrorReturn,

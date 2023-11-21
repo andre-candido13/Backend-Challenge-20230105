@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import productRouter from "./routers/products-router.js";
-import { importData } from "./controllers/products-controller.js";
-import { handleApplicationErrors } from "./middleware/error-middlwware.js";
-import swaggerUi from "swagger-ui-express";
+import productRouter from "./routers/products-router";
+import { importData } from "./controllers/products-controller";
+import { handleApplicationErrors } from "./middleware/error-middlwware";
+
 
 
 

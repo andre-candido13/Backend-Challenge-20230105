@@ -1,5 +1,5 @@
 import { ProductCreate } from "../interface/product-interface";
-import createProductsRepository from "../repository/products-repository.js";
+import createProductsRepository from "../repository/products-repository";
 
 
 

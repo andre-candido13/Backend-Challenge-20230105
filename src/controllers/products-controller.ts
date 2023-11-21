@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { ProductCreate } from "../interface/product-interface";
 import httpStatus from "http-status";
-import productsService from "../service/products-service.js";
+import productsService from "../service/products-service";
 import axios, { AxiosResponse } from "axios";
-import { importProducts } from "../service/cron-importProducts-service.js";
+import { importProducts } from "../service/cron-importProducts-service";
 import pako from "pako"
 
 

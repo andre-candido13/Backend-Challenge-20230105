@@ -1,5 +1,5 @@
 import { ProductCreate } from "../interface/product-interface";
-import { db } from "../database/database.js";
+import { db } from "../database/database";
 
 
 async function createProducts ( createProduct: ProductCreate ) {
