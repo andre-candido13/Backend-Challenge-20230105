@@ -2,6 +2,7 @@ import { ProductCreate } from "../interface/product-interface";
 import { db } from "../database/database";
 
 
+
 async function createProducts ( createProduct: ProductCreate ) {
 
     await db.query(`INSERT INTO products (
@@ -55,6 +56,7 @@ async function createProducts ( createProduct: ProductCreate ) {
         createProduct.image_url 
 
     ])
+
 
 }
 

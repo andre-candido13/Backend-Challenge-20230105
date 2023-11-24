@@ -2,18 +2,16 @@ import { ProductCreate } from "../interface/product-interface";
 import createProductsRepository from "../repository/products-repository";
 
 
-
-
 export async function importProducts (data:any) {
 
     const importDate = new Date();
     const status = 'draft'
 
-    const productsToImport = data.slice(0, 1);
 
-    if (Array.isArray) {
+    if (Array.isArray(data)) {
 
-    const importPromises = productsToImport.map(async (productData) => {
+
+        const importPromises = data.map(async (productData) => {
        
         const product: ProductCreate =  {
             code: productData.code,
@@ -44,11 +42,12 @@ export async function importProducts (data:any) {
 
         }
             await createProductsRepository.createProducts(product)
-            //console.log("aaaa", product)
-           //console.log("bbbbb", productData)
+         
 
     })
 
     await Promise.all(importPromises)
-}
+} else {
+    console.log("Data is not an array or is empty.");
+  }
 }
