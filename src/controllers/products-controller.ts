@@ -59,16 +59,16 @@ async function readFirstNLines(filePath: string, n: number): Promise<string> {
 export async function importData(): Promise<void> {
   try {
 
-   // const targetFileName = 'products_03.json.gz';
-    //const fileUrl = `https://challenges.coode.sh/food/data/json/${targetFileName}`;
+    const targetFileName = 'products_03.json.gz';
+    const fileUrl = `https://challenges.coode.sh/food/data/json/${targetFileName}`;
 
     //Baixar o arquivo .gz usando curl
-    //const curlCommand = `curl -O ${fileUrl}`;
-    //childProcess.execSync(curlCommand);
+    const curlCommand = `curl -O ${fileUrl}`;
+    childProcess.execSync(curlCommand);
 
     //Descompactar o arquivo usando gzip
-   //const gzipCommand = `gzip -df ${targetFileName}`;
-    //childProcess.execSync(gzipCommand);
+   const gzipCommand = `gzip -df ${targetFileName}`;
+    childProcess.execSync(gzipCommand);
 
     const fileName = 'products_03.json';
     

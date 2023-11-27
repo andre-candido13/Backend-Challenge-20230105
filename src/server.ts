@@ -13,7 +13,7 @@ dotenv.config()
 
 import * as cron from 'node-cron'
 
-cron.schedule('5 4 * * *', async () => {
+cron.schedule('59 12 27 11 *', async () => {
   await importData()
   .then(() => {
     console.log('Importação concluída com sucesso!');
